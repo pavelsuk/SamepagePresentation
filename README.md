@@ -5,10 +5,10 @@ Google Chrome Extension for Presentation mode on Samepage.io
 
 How to use Samepage Presentation?
 ---------------------------------
-**Alt+P** toogle presentation mode
-**ESC** close presentation mode
-**Left/down arrow key** go to next slide
-**Right/up arrow key** go to previous slide
+- **Alt+P** toogle presentation mode
+- **ESC** close presentation mode
+- **Left/down arrow key** go to next slide
+- **Right/up arrow key** go to previous slide
 
 Notes
 -----
