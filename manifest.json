@@ -1,0 +1,26 @@
+{
+  "name": "Samepage - Presentation",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Samepage - Presentation",
+
+  "permissions": [
+    "tabs",
+    "https://samepage.io/*"
+  ],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "page_action": {
+    "default_title": "Samepage - Presentation"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://samepage.io/*"
+      ],
+      "js": ["jquery.js", "presentation.js"]
+    }
+  ]
+}
