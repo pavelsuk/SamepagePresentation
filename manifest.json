@@ -1,8 +1,14 @@
 {
   "name": "Samepage - Presentation",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 2,
   "description": "Samepage - Presentation",
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
 
   "permissions": [
     "tabs",
