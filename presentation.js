@@ -28,12 +28,13 @@ document.documentElement.addEventListener("keyup", function(event) {
   }
   else if (event.keyCode === 27) { // esc
     if (isPresentation) togglePresentation();
+    $('#slideFooter').remove();
   }
 }, true);
 
 function togglePresentation() {
   var script;
-	var $slideFooter = $('<img src="/cloud/img/samepage.png">');
+	var $slideFooter = $('<img id="slideFooter" src="/cloud/img/samepage.png">');
 
   isPresentation = !isPresentation;
   if (isPresentation) {
