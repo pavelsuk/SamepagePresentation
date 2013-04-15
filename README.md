@@ -3,6 +3,14 @@ SamepagePresentation
 
 Google Chrome Extension for Presentation mode on Samepage.io
 
+How to install Samepage Presentation?
+-------------------------------------
+- Download this repository
+- Open **chrome://extensions**
+- Click on **Developer mode**
+- Click on **Load unpacked extension...**
+- Select folder with downloaded files
+
 How to use Samepage Presentation?
 ---------------------------------
 - **Alt+P** toogle presentation mode
