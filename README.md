@@ -5,7 +5,7 @@ Google Chrome Extension for Presentation mode on Samepage.io
 
 How to install Samepage Presentation?
 -------------------------------------
-- Download this repository
+- Download this repository (if you use ZIP version, unzip it)
 - Open **chrome://extensions**
 - Click on **Developer mode**
 - Click on **Load unpacked extension...**
@@ -20,7 +20,6 @@ How to use Samepage Presentation?
 
 Notes
 -----
-- it's working only on pages with two/tree columns.
 - central column is used for presentation
 - one component = one slide
 - only some components and content will look good
