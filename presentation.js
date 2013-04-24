@@ -99,6 +99,8 @@ function moveToSlide(nr) {
   var $componentPanel = $pageBody.find('.k-component-panel:nth-child(' + nr + ')');
   var $componentBody = $componentPanel.find('.k-component-body');
   var componentHeader = $componentPanel.find('.k-component-header .k-text').text();
+  
+  var $headerColor = $componentPanel.find('.k-component-header').css("color")
   var $slideHeader = $('<h1>').text(componentHeader);
   var $slideHeaderLine = $('<div>');
   var $slide = $componentBody.clone(true);
@@ -148,14 +150,26 @@ function moveToSlide(nr) {
   });
 
   if (!/^:/.test(componentHeader)) { // headers starting with : are ignored in presentation mode
-    $slideHeader.css({
-      color: 'rgb(100,165,0)',
-    });
-	$slideHeaderLine.css({
-		backgroundColor: 'rgb(100,165,0)',
+    $slideHeaderLine.css({
 		height: '8px',
 		marginTop: '8px'
 	});
+	if ($headerColor!=="") {
+		$slideHeader.css({
+			color: $headerColor
+		}); 
+		
+		$slideHeaderLine.css({
+			backgroundColor: $headerColor
+		});
+	
+	} 	else {
+		$slideHeaderLine.css({
+			backgroundColor: '#222' // TODO: it should be better to take it from CSS
+		});
+	}
+	
+		
 	$slideHeader.append($slideHeaderLine);
     $slide.prepend($slideHeader);
   }
