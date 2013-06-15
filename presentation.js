@@ -1,4 +1,4 @@
-var $pageBody, $slideContainer, slideCount
+var $pageBody, $slideContainer, slideCount, $origBody
   isPresentation = false,
   slideNr = 1;
 
@@ -39,10 +39,15 @@ function togglePresentation() {
   if (isPresentation) {
     // TODO return listeners when toggle back
     injectScriptInPage('Ext.EventManager.resizeEvent.clearListeners();');
+	// why to clear these listeners?
+	// Otherwise it shows the page again when resized
 
     $pageBody = $('#column-center').clone();
-    $('body > *').hide();
-
+	// save original body to restore it back
+	$origBody = $('body > *');
+	// and remove it (don't hide it, since it's difficult to unhide it correctly
+	$('body > *').remove();
+	
     $slideContainer = $('<div>');
 
     $slideContainer.css({
@@ -75,9 +80,11 @@ function togglePresentation() {
     moveToSlide(slideNr);
   }
   else {
+    $('#slideFooter').remove();
     if ($slideContainer) $slideContainer.remove();
-	$('#slideFooter').remove();
-    $('body > *').show();
+	// and return back original content
+	$('body').append($origBody);
+	
   }
 }
 
