@@ -28,7 +28,6 @@ document.documentElement.addEventListener("keyup", function(event) {
   }
   else if (event.keyCode === 27) { // esc
     if (isPresentation) togglePresentation();
-    $('#slideFooter').remove();
   }
 }, true);
 
@@ -77,6 +76,7 @@ function togglePresentation() {
   }
   else {
     if ($slideContainer) $slideContainer.remove();
+	$('#slideFooter').remove();
     $('body > *').show();
   }
 }
