@@ -1,6 +1,6 @@
-var $pageBody, $slideContainer, slideCount, $origBody
-	isPresentation = false,
-	slideNr = 1;
+var $pageBody, $slideContainer, slideCount, $origBody, previousUrl;
+var isPresentation = false;
+var slideNr = 1;
 
 if (window == top) {
 	chrome.extension.onRequest.addListener(function(req, sender, sendResponse) {
@@ -9,28 +9,52 @@ if (window == top) {
 	});
 }
 
-document.documentElement.addEventListener("keyup", function(event) {
+document.documentElement.addEventListener("keydown", function(event) {
 	if (event.altKey && (event.keyCode === 112 || event.keyCode === 80)) { // P
 		togglePresentation();
+		event.preventDefault();
 		return;
 	}
 
 	if (!isPresentation) return;
 
-	if (event.keyCode === 39 || event.keyCode === 40) { // left/down arrow
-		nextSlide();
+	if (event.metaKey) {
+		if (event.keyCode === 39 || event.keyCode === 40) { // end
+			lastSlide();
+			event.preventDefault();
+		}
+		else if (event.keyCode === 37 || event.keyCode === 38) { // home
+			firstSlide();
+			event.preventDefault();
+		}
 	}
-	else if (event.keyCode === 37 || event.keyCode === 38) { // right/up arrow
-		previousSlide();
-	}
-	else if (event.keyCode === 27) { // esc
-		if (isPresentation) togglePresentation();
+	else {
+		if (event.keyCode === 39 || event.keyCode === 40 || event.keyCode === 32) { // right/down arrow or space
+			nextSlide();
+			event.preventDefault();
+		}
+		else if (event.keyCode === 37 || event.keyCode === 38) { // left/up arrow
+			previousSlide();
+			event.preventDefault();
+		}
+		else if (event.keyCode === 35) { // end
+			lastSlide();
+			event.preventDefault();
+		}
+		else if (event.keyCode === 36) { // home
+			firstSlide();
+			event.preventDefault();
+		}
+		else if (event.keyCode === 27) { // esc
+			togglePresentation();
+			event.preventDefault();
+		}
 	}
 }, true);
 
 function togglePresentation() {
-	var script;
 	var $slideFooter = $('<img id="slideFooter">');
+	var currentUrl = window.location.href;
 
 	isPresentation = !isPresentation;
 	if (isPresentation) {
@@ -75,7 +99,13 @@ function togglePresentation() {
 		$pageBody.find('.component-preview').remove(); // remove component previews (they contains their own k-component-panels)
 		slideCount = $pageBody.find('.k-component-panel').length;
 
+		debugger;
+		if (previousUrl !== currentUrl) {
+			slideNr = 1;
+		}
+
 		moveToSlide(slideNr);
+		previousUrl = currentUrl;
 	}
 	else {
 		$('#slideFooter').remove();
@@ -95,6 +125,18 @@ function nextSlide() {
 function previousSlide() {
 	if (!isPresentation) return;
 	if (slideNr > 1) slideNr--;
+	moveToSlide(slideNr);
+}
+
+function firstSlide() {
+	if (!isPresentation) return;
+	slideNr = 1;
+	moveToSlide(slideNr);
+}
+
+function lastSlide() {
+	if (!isPresentation) return;
+	slideNr = slideCount;
 	moveToSlide(slideNr);
 }
 

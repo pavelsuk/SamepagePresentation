@@ -15,8 +15,10 @@ How to use Samepage Presentation?
 ---------------------------------
 - **Alt+P** toogle presentation mode
 - **ESC** close presentation mode
-- **Left/down arrow key** go to next slide
-- **Right/up arrow key** go to previous slide
+- **Right/down arrow key** go to next slide
+- **Left/up arrow key** go to previous slide
+- **Home/End (or ⌘← and ⌘→ on Mac OS X) key** first/last slide
+- **Space bar** go to next slide
 
 Notes
 -----
