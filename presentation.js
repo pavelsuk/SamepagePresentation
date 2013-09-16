@@ -9,9 +9,6 @@ if (window == top) {
 	});
 }
 
-// samepage pics: http://samepage.io/cloud/img/samepage.png
-// <img width="417" height="78" itemprop="logo" alt="Samepage" class="logo" src="/cloud/img/samepage.png?v=e1a812ad96e4efeb84a705425f686b254f912d37">
-
 document.documentElement.addEventListener("keyup", function(event) {
 	if (event.altKey && (event.keyCode === 112 || event.keyCode === 80)) { // P
 		togglePresentation();
@@ -33,7 +30,7 @@ document.documentElement.addEventListener("keyup", function(event) {
 
 function togglePresentation() {
 	var script;
-	var $slideFooter = $('<img id="slideFooter" src="/cloud/img/samepage.png">');
+	var $slideFooter = $('<img id="slideFooter">');
 
 	isPresentation = !isPresentation;
 	if (isPresentation) {
@@ -55,17 +52,18 @@ function togglePresentation() {
 			paddingLeft: '15%',
 			paddingRight: '15%',
 			paddingTop: '1em',
-			paddingBottom: '78', // size of logo
+			paddingBottom: '82px', // height of logo
 
 			display: 'table',
 			position: 'relative',
-			fontSize: '3em'
+			fontSize: '3em',
+			background: 'white'
 		});
 
-
+		$slideFooter.attr('src', chrome.extension.getURL('images/logo.png'));
 		$slideFooter.css({
-			width: '417',
-			height: '78',
+			width: '417px',
+			height: '82px',
 			position: 'fixed',
 			bottom: '1em',
 			right: '15%'
@@ -74,6 +72,7 @@ function togglePresentation() {
 		$('body').append($slideContainer);
 		$('body').append($slideFooter);
 
+		$pageBody.find('.component-preview').remove(); // remove component previews (they contains their own k-component-panels)
 		slideCount = $pageBody.find('.k-component-panel').length;
 
 		moveToSlide(slideNr);
@@ -111,12 +110,9 @@ function moveToSlide(nr) {
 	var $slideHeaderLine = $('<div>');
 	var $slide = $componentBody.clone(true);
 
-
 	$slide.css({
 		display: 'table-cell',
-		width: '100%',
-//		textAlign: 'center',
-//		verticalAlign: 'middle'
+		width: '100%'
 	});
 
 	$slide.find('.k-html-content h1').css({
@@ -144,50 +140,42 @@ function moveToSlide(nr) {
 		marginBottom: '18px'
 	});
 
-	/*
-	$slide.find('.k-html-content ul>li').each(function() {
-		var $this = $(this);
-		$this.html('&bull;&nbsp;' + $this.text());
-	});
-	*/
-
 	$slide.find('.k-image-container').css({
 		width: '100%'
 	});
 
 	if (!/^:/.test(componentHeader)) { // headers starting with : are ignored in presentation mode
 		$slideHeaderLine.css({
-		height: '8px',
-		marginTop: '8px'
-	});
-	if ($headerColor!=="") {
-		$slideHeader.css({
-			color: $headerColor
+			height: '8px',
+			marginTop: '8px'
 		});
 
-		$slideHeaderLine.css({
-			backgroundColor: $headerColor
-		});
+		if ($headerColor !== "") {
+			$slideHeader.css({
+				color: $headerColor
+			});
 
-	} 	else {
-		$slideHeaderLine.css({
-			backgroundColor: '#222' // TODO: it should be better to take it from CSS
-		});
-	}
+			$slideHeaderLine.css({
+				backgroundColor: $headerColor
+			});
+		}
+		else {
+			$slideHeaderLine.css({
+				backgroundColor: '#222' // TODO: it should be better to take it from CSS
+			});
+		}
 
-
-	$slideHeader.append($slideHeaderLine);
+		$slideHeader.append($slideHeaderLine);
 		$slide.prepend($slideHeader);
 	}
-
 
 	$slideContainer.empty();
 	$slideContainer.append($slide);
 }
 
 function injectScriptInPage(code) {
-	script = document.createElement('script');
+	var script = document.createElement('script');
 	script.textContent = code;
-	(document.head||document.documentElement).appendChild(script);
+	(document.head || document.documentElement).appendChild(script);
 	script.parentNode.removeChild(script);
 }

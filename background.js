@@ -1,5 +1,5 @@
 function checkForSamepageUrl(tabId, changeInfo, tab) {
-  if (tab.url.indexOf('://samepage.io/') > -1 || tab.url.indexOf('://localhost:8080/') > -1) {
+  if (tab.url.indexOf('://samepage.io/') > -1 || tab.url.indexOf('://localhost:8086/') > -1) {
     chrome.pageAction.show(tabId);
   }
 };

@@ -1,35 +1,37 @@
 {
-  "name": "Samepage - Presentation",
-  "version": "1.1.2",
-  "manifest_version": 2,
-  "description": "Samepage - Presentation",
+	"name": "Samepage - Presentation",
+	"version": "1.1.3",
+	"manifest_version": 2,
+	"description": "Samepage - Presentation",
 
-  "icons": {
-    "16": "images/icon16.png",
-    "19": "images/icon19.png",
-    "38": "images/icon38.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
-  },
+	"icons": {
+		"16": "images/icon16.png",
+		"19": "images/icon19.png",
+		"38": "images/icon38.png",
+		"48": "images/icon48.png",
+		"128": "images/icon128.png"
+	},
 
-  "permissions": [
-    "tabs",
-    "https://samepage.io/*"
-  ],
+	"permissions": [
+		"tabs",
+		"https://samepage.io/*",
+		"http://localhost:8086/*"
+	],
 
-  "background": {
-    "scripts": ["background.js"]
-  },
-  "page_action": {
-    "default_title": "Samepage - Presentation",
-    "default_icon": "images/icon19.png"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://samepage.io/*"
-      ],
-      "js": ["jquery.js", "presentation.js"]
-    }
-  ]
+	"web_accessible_resources": ["images/logo.png"] ,
+
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"page_action": {
+		"default_title": "Samepage - Presentation",
+		"default_icon": "images/icon19.png"
+	},
+	"content_scripts": [{
+		"matches": [
+			"https://samepage.io/*",
+			"http://localhost:8086/*"
+		],
+		"js": ["zepto.min.js", "presentation.js"]
+	}]
 }
