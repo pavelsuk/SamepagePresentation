@@ -1,6 +1,33 @@
+<!DOCTYPE html>
 <html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jmbadoagdponflacnmlhbbdbknfnlojf">
+	<title>Samepage.io - Presentations</title>
+</head>
 <body>
-	<h1>Samepage Presentation Plugin</h1>
-	<div><a href="SamepagePresentation.crx">Install</a></div>
+	<h1>Samepage.io - Presentations</h1>
+	<div>
+		<button id="install-button">Add to Chrome</button>
+		<span id="extension-installed" style="display: none"><strong>Extension is successfully installed</strong></span>
+		<script>
+			var installButton = document.getElementById('install-button');
+			var extensionInstalled = document.getElementById('extension-installed');
+
+			installButton.addEventListener('click', function() {
+				chrome.webstore.install(function onSuccess() {
+					checkIsInstalled();
+				});
+			}, false);
+
+			function checkIsInstalled() {
+				if (chrome.app.isInstalled) {
+					installButton.style.display = 'none';
+					extensionInstalled.style.display = 'inline';
+				}
+			}
+			checkIsInstalled();
+		</script>
+	</div>
 </body>
 </html>
