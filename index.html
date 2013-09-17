@@ -15,7 +15,7 @@
 			var extensionInstalled = document.getElementById('extension-installed');
 
 			installButton.addEventListener('click', function() {
-				chrome.webstore.install(function onSuccess() {
+				chrome.webstore.install(undefined, function onSuccess() {
 					checkIsInstalled();
 				});
 			}, false);
