@@ -5,7 +5,12 @@ Google Chrome Extension for Presentation mode on Samepage.io
 
 How to install Samepage Presentation?
 -------------------------------------
-- Download this repository (if you use ZIP version, unzip it)
+[There is official page with one-click installation from Google WebStore.](http://kerio.github.io/SamepagePresentation/)
+
+How to manually install current source code?
+-------------------------------------
+- Click on **[Download ZIP](https://github.com/Kerio/SamepagePresentation/archive/master.zip)**
+- Uzip it
 - Open **chrome://extensions**
 - Click on **Developer mode**
 - Click on **Load unpacked extension...**
