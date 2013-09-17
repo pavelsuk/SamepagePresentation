@@ -10,7 +10,7 @@ How to install Samepage Presentation?
 How to manually install current source code?
 -------------------------------------
 - Click on **[Download ZIP](https://github.com/Kerio/SamepagePresentation/archive/master.zip)**
-- Uzip it
+- Unzip it
 - Open **chrome://extensions**
 - Click on **Developer mode**
 - Click on **Load unpacked extension...**

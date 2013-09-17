@@ -70,6 +70,7 @@ function togglePresentation() {
 
 		$slideContainer = $('<div>');
 
+		$slideContainer.addClass('presentation');
 		$slideContainer.css({
 			width: '100%',
 			height: '100%',
@@ -99,7 +100,6 @@ function togglePresentation() {
 		$pageBody.find('.component-preview').remove(); // remove component previews (they contains their own k-component-panels)
 		slideCount = $pageBody.find('.k-component-panel').length;
 
-		debugger;
 		if (previousUrl !== currentUrl) {
 			slideNr = 1;
 		}
@@ -147,7 +147,7 @@ function moveToSlide(nr) {
 	var $componentBody = $componentPanel.find('.k-component-body');
 	var componentHeader = $componentPanel.find('.k-component-header .k-text').text();
 
-	var $headerColor = $componentPanel.find('.k-component-header').css("color")
+	var $headerColor = $componentPanel.find('.k-component-header').css("color");
 	var $slideHeader = $('<h1>').text(componentHeader);
 	var $slideHeaderLine = $('<div>');
 	var $slide = $componentBody.clone(true);
@@ -175,11 +175,33 @@ function moveToSlide(nr) {
 		lineHeight: '1.5em'
 	});
 
+	$slide.find('.k-html-content ul li').css({
+		listStyleType: 'disc'
+	});
+	$slide.find('.k-html-content li li').css({
+		marginLeft: '30px'
+	});
+	$slide.find('.k-html-content ul li ul li, .k-html-content ol li ul li').css({
+		listStyleType: 'circle'
+	});
 
-	$slide.find('.k-html-content ul>li').css({
+	$slide.find('.k-html-content ol li').css({
+		listStylePosition: 'inside'
+	});
+	$slide.find('.k-html-content ol li ol li, .k-html-content ul li ol li').css({
+		listStyleType: 'lower-alpha',
+		marginLeft: '45px'
+	});
+
+	$slide.find('.k-html-content ol').css({
+		marginLeft: '0'
+	});
+
+	$slide.find('.k-html-content ol li, .k-html-content ul li').css({
 		fontSize: '36px',
-		lineHeight: '72px',
-		marginBottom: '18px'
+		lineHeight: '48px',
+		marginTop: '9px',
+		marginBottom: '9px'
 	});
 
 	$slide.find('.k-image-container').css({
@@ -190,6 +212,9 @@ function moveToSlide(nr) {
 		$slideHeaderLine.css({
 			height: '8px',
 			marginTop: '8px'
+		});
+		$slideHeader.css({
+			marginBottom: '30px'
 		});
 
 		if ($headerColor !== "") {
@@ -221,3 +246,16 @@ function injectScriptInPage(code) {
 	(document.head || document.documentElement).appendChild(script);
 	script.parentNode.removeChild(script);
 }
+
+var addCssRule = (function(style){
+	var sheet = document.head.appendChild(style).sheet;
+
+	return function(selector, css){
+		var propText = Object.keys(css).map(function(property){
+			return property + ':' + css[property]
+		}).join(';');
+		sheet.insertRule(selector + '{' + propText + '}', sheet.cssRules.length);
+	}
+})(document.createElement('style'));
+// clean-up of list items
+addCssRule('.presentation .k-html-content ul>li:before', { background: 'none' });
