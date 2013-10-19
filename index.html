@@ -4,30 +4,65 @@
 	<meta charset="UTF-8">
 	<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/jmbadoagdponflacnmlhbbdbknfnlojf">
 	<title>Samepage.io - Presentations</title>
+	<link rel="shortcut icon" href="/favicon.ico" />
+	<style>
+		body {
+			background: white url('http://samepage.io/cloud/img/grey-bg-texture.jpg?v=34cdd3bc7ffcd0b560f15c7ee12ab7076a40249c') repeat;
+			text-align: center;
+			margin: 5%;
+		}
+		a img {
+			border: 0;
+		}
+		#install-button {
+			display: inline-block;
+			padding: 5px 13px;
+			background-color: #64a500;
+			height: 30px;
+			width: 156px;
+			line-height: 30px;
+			font-size: 16px;
+			font-family: 'FrutigerLTW01-45Light', Helvetica, Arial, sans-serif;
+			cursor: pointer;
+			text-align: center;
+			color: #fff;
+			border-radius: 3px;
+			border: 1px solid #777;
+			margin-top: 20px;
+		}
+		#install-button:hover {
+			background-color: #539400;
+		}
+		#presentations {
+			display: inline-block;
+			width: 200px;
+			height: 200px;
+			background: -webkit-radial-gradient(center, ellipse contain, rgba(0,0,0,0.8) 0%, rgba(255,255,255,0) 100%);
+			background: -o-radial-gradient(center, ellipse contain, rgba(0,0,0,0.8) 0%, rgba(255,255,255,0) 100%);
+			margin-top: 10px;
+		}
+		#presentations img {
+			margin-top: 45px;
+		}
+	</style>
 </head>
 <body>
-	<h1>Samepage.io - Presentations</h1>
+	<a href="http://samepage.io/intro"><img src="http://samepage.io/cloud/img/samepage.png?v=34cdd3bc7ffcd0b560f15c7ee12ab7076a40249c" width="250" height="47" alt="Samepage.io" title="Samepage.io" /></a>
+	<br/>
+	<div id="presentations">
+		<img src="/img/presentations.png" alt="Samepage.io - Presentations" title="Samepage.io - Presentations" width="128" height="128" />
+	</div>
+	<br/>
 	<div>
-		<button id="install-button">Add to Chrome</button>
-		<span id="extension-installed" style="display: none"><strong>Extension is successfully installed</strong></span>
+		<div id="install-button">Add to Chrome</div>
+		<h2 id="extension-installed" style="display: none">The extension is successfully installed.</h2>
 		<script>
 			var installButton = document.getElementById('install-button');
-			var extensionInstalled = document.getElementById('extension-installed');
-
 			installButton.addEventListener('click', function() {
-				chrome.webstore.install(undefined, function onSuccess() {
-					checkIsInstalled();
-				});
+				chrome.webstore.install();
 			}, false);
-
-			function checkIsInstalled() {
-				if (chrome.app.isInstalled) {
-					installButton.style.display = 'none';
-					extensionInstalled.style.display = 'inline';
-				}
-			}
-			checkIsInstalled();
 		</script>
 	</div>
+	<a href="https://github.com/Kerio/SamepagePresentation"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 </body>
 </html>
