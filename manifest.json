@@ -1,6 +1,6 @@
 {
 	"name": "Samepage.io - Presentations",
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"manifest_version": 2,
 	"description": "You can simply use pages on samepage.io to present your ideas.",
 
@@ -15,7 +15,8 @@
 	"permissions": [
 		"tabs",
 		"https://samepage.io/*",
-		"http://localhost:8086/*"
+		"http://localhost:8086/*",
+		"http://kerio.github.io/SamepagePresentation/"
 	],
 
 	"web_accessible_resources": ["images/logo.png"] ,
@@ -33,5 +34,11 @@
 			"http://localhost:8086/*"
 		],
 		"js": ["zepto.min.js", "presentation.js"]
+	}, {
+		"matches": [
+			"http://kerio.github.io/SamepagePresentation/"
+		],
+		"js": ["isInstalled.js"],
+		"run_at": "document_end"
 	}]
 }
