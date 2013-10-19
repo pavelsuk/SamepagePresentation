@@ -7,7 +7,12 @@ function checkForSamepageUrl(tabId, changeInfo, tab) {
 chrome.tabs.onUpdated.addListener(checkForSamepageUrl);
 
 chrome.pageAction.onClicked.addListener(function(tab) {
-  chrome.tabs.sendRequest(tab.id, {}, function() {
-    console.log('success');
-  });
+	chrome.tabs.sendRequest(tab.id, {});
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	chrome.windows.getCurrent(null, function(window) {
+		chrome.windows.update(window.id, { state: (request.fullscreen ? 'fullscreen' : 'maximized') });
+	});
+	sendResponse();
 });

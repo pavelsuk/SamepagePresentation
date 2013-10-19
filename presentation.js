@@ -1,6 +1,10 @@
-var $pageBody, $slideContainer, slideCount, $origBody, previousUrl;
+var $pageBody, $slides, $slideContainer, slideCount;
+var $slideFooter = $('<img id="slideFooter" width="104" height="67">');
+var $slideProgress = $('<div><div id="slideProgress"></div></div>');
 var isPresentation = false;
 var slideNr = 1;
+var maxWidth = screen.width;
+var maxHeight = screen.height;
 
 if (window == top) {
 	chrome.extension.onRequest.addListener(function(req, sender, sendResponse) {
@@ -53,20 +57,36 @@ document.documentElement.addEventListener("keydown", function(event) {
 }, true);
 
 function togglePresentation() {
-	var $slideFooter = $('<img id="slideFooter">');
-	var currentUrl = window.location.href;
-
 	isPresentation = !isPresentation;
+	try {
+		chrome.runtime.sendMessage({ fullscreen: isPresentation });
+	}
+	catch (ignore) { /* nothing to do */ }
+
 	if (isPresentation) {
 		injectScriptInPage('var extResizeListeners = Ext.EventManager.resizeEvent.listeners.map(function(listener) { return listener }); Ext.EventManager.resizeEvent.clearListeners();');
-		// why to clear these listeners?
-		// Otherwise it shows the page again when resized
+		// why to clear these listeners? otherwise it shows the page again when resized
 
 		$pageBody = $('#column-center').clone();
-		// save original body to restore it back
-		$origBody = $('body > *');
-		// and remove it (don't hide it, since it's difficult to unhide it correctly
+		// remove all elements from the body
 		$('body > *').remove();
+
+		$slideProgress.css({
+			position: 'fixed',
+			bottom: 0,
+			left: 0,
+			right: 0,
+			height: '6px',
+			backgroundColor: 'white'
+		});
+		$slideProgress.find('#slideProgress').css({
+			position: 'absolute',
+			top: 0,
+			bottom: 0,
+			left: 0,
+			width: 0,
+			backgroundColor: '#4471C1'
+		});
 
 		$slideContainer = $('<div>');
 
@@ -77,7 +97,7 @@ function togglePresentation() {
 			paddingLeft: '15%',
 			paddingRight: '15%',
 			paddingTop: '1em',
-			paddingBottom: '82px', // height of logo
+			paddingBottom: '50px',
 
 			display: 'table',
 			position: 'relative',
@@ -85,66 +105,59 @@ function togglePresentation() {
 			background: 'white'
 		});
 
-		$slideFooter.attr('src', chrome.extension.getURL('images/logo.png'));
-		$slideFooter.css({
-			width: '417px',
-			height: '82px',
-			position: 'fixed',
-			bottom: '1em',
-			right: '15%'
-		});
+		$slideFooter
+			.attr('src', chrome.extension.getURL('images/logo.png'))
+			.css({
+				position: 'fixed',
+				right: '15px',
+				bottom: '20px'
+			});
 
 		$('body').append($slideContainer);
+		$('body').append($slideProgress);
 		$('body').append($slideFooter);
 
-		$pageBody.find('.component-preview').remove(); // remove component previews (they contains their own k-component-panels)
-		slideCount = $pageBody.find('.k-component-panel').length;
+		$slides = [];
 
-		if (previousUrl !== currentUrl) {
-			slideNr = 1;
-		}
+		// remove component previews (they contains their own k-component-panels)
+		$pageBody.find('.component-preview').remove();
 
-		moveToSlide(slideNr);
-		previousUrl = currentUrl;
+		// remove unsupported components (only Text and Images are supported)
+		$pageBody.find('.k-component-panel').filter(function() {
+			var isText = ($('.k-html-content:not(.k-mashup-content)', this).length === 1);
+			var isImages = ($('.k-image-gallery', this).length === 1);
+			var $slide;
+
+			if (isText) {
+				$slide = prepareTextSlide($(this));
+				$slides.push($slide);
+			}
+			else if (isImages) {
+				$('.k-image-gallery img', this).each(function() {
+					$slide = prepareImageSlide($(this));
+					$slides.push($slide);
+				});
+			}
+		});
+
+		// remove the rest of panels - we transferred them
+		$pageBody.find('.k-component-panel').remove();
+
+		slideCount = $slides.length;
+		firstSlide();
 	}
 	else {
-		$('#slideFooter').remove();
+		$slideProgress.remove();
+		$slideFooter.remove();
 		if ($slideContainer) $slideContainer.remove();
-		// and return back original content
-		$('body').append($origBody);
-		injectScriptInPage('if (extResizeListeners) { extResizeListeners.forEach(function(listener) { Ext.EventManager.resizeEvent.addListener(listener.fn, listener.scope) }); extResizeListeners = null }');
+		// reload page to get rid of presentation mode
+		window.location.reload();
 	}
 }
 
-function nextSlide() {
-	if (!isPresentation) return;
-	if (slideNr < slideCount) slideNr++;
-	moveToSlide(slideNr);
-}
-
-function previousSlide() {
-	if (!isPresentation) return;
-	if (slideNr > 1) slideNr--;
-	moveToSlide(slideNr);
-}
-
-function firstSlide() {
-	if (!isPresentation) return;
-	slideNr = 1;
-	moveToSlide(slideNr);
-}
-
-function lastSlide() {
-	if (!isPresentation) return;
-	slideNr = slideCount;
-	moveToSlide(slideNr);
-}
-
-function moveToSlide(nr) {
-	if (!isPresentation) return;
-
-	var $componentPanel = $pageBody.find('.k-component-panel:nth-child(' + nr + ')');
+function prepareTextSlide($componentPanel) {
 	var $componentBody = $componentPanel.find('.k-component-body');
+	var hasComponentHeader = ($componentPanel.find('.k-component-header').css('display') !== 'none');
 	var componentHeader = $componentPanel.find('.k-component-header .k-text').text();
 
 	var $headerColor = $componentPanel.find('.k-component-header').css("color");
@@ -204,11 +217,7 @@ function moveToSlide(nr) {
 		marginBottom: '9px'
 	});
 
-	$slide.find('.k-image-container').css({
-		width: '100%'
-	});
-
-	if (!/^:/.test(componentHeader)) { // headers starting with : are ignored in presentation mode
+	if (hasComponentHeader) {
 		$slideHeaderLine.css({
 			height: '8px',
 			marginTop: '8px'
@@ -236,8 +245,86 @@ function moveToSlide(nr) {
 		$slide.prepend($slideHeader);
 	}
 
+	return $slide;
+}
+
+function prepareImageSlide($image) {
+	var $slide = $('<div>');
+	var image = new Image();
+	var src = $image.attr('src');
+
+	src = src.replace(/(width)=\d+(&?)/, '$1=' + maxWidth + '$2');
+	src = src.replace(/(height)=\d+(&?)/, '$1=' + maxHeight + '$2');
+	// preload image
+	image.setAttribute('src', src);
+	image.addEventListener('load', function() {
+		if (image.width < maxWidth && image.height < maxHeight) {
+			$slide.css({ backgroundSize: 'auto' });
+		}
+	});
+
+	$slide.css({
+		position: 'absolute',
+		top: 0, left: 0,
+		right: 0, bottom: 0,
+		backgroundImage: 'url(' + src + ')',
+		backgroundPosition: 'center center',
+		backgroundSize: 'contain',
+		backgroundRepeat: 'no-repeat'
+	});
+
+	return $slide;
+}
+
+function nextSlide() {
+	if (!isPresentation) return;
+	if (slideNr < slideCount) slideNr++;
+	moveToSlide(slideNr);
+}
+
+function previousSlide() {
+	if (!isPresentation) return;
+	if (slideNr > 1) slideNr--;
+	moveToSlide(slideNr);
+}
+
+function firstSlide() {
+	if (!isPresentation) return;
+	slideNr = 1;
+	moveToSlide(slideNr);
+}
+
+function lastSlide() {
+	if (!isPresentation) return;
+	slideNr = slideCount;
+	moveToSlide(slideNr);
+}
+
+function moveToSlide(nr) {
+	if (!isPresentation) return;
+	var $slide = $slides[nr - 1];
+	var $textInside, scaleCoef, rect;
+
 	$slideContainer.empty();
 	$slideContainer.append($slide);
+
+	$slideProgress.find('#slideProgress').css({
+		width: Math.ceil(((nr - 1) / (slideCount - 1)) * 100) + '%'
+	});
+
+	$textInside = $slide.find('.k-html-content');
+	if ($textInside.length > 0) {
+		rect = $textInside[0].getBoundingClientRect();
+
+		if ((rect.height + rect.top) > (maxHeight - 50)) {
+			scaleCoef = ((maxHeight - rect.top - 50) / rect.height);
+		}
+
+		$textInside.css({
+			'-webkit-transform': 'scale(' + scaleCoef + ', ' + scaleCoef + ')',
+			'-webkit-transform-origin': '0 0'
+		});
+	}
 }
 
 function injectScriptInPage(code) {
