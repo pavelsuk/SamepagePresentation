@@ -85,6 +85,7 @@ function togglePresentation() {
 			bottom: 0,
 			left: 0,
 			width: 0,
+			'-webkit-transition': 'width 0.5s',
 			backgroundColor: '#4471C1'
 		});
 
