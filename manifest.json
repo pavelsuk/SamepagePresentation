@@ -1,6 +1,6 @@
 {
 	"name": "Samepage.io - Presentations",
-	"version": "1.1.5",
+	"version": "1.1.6",
 	"manifest_version": 2,
 	"description": "You can simply use pages on samepage.io to present your ideas.",
 
@@ -14,6 +14,7 @@
 
 	"permissions": [
 		"tabs",
+		"storage",
 		"https://samepage.io/*",
 		"http://localhost:8086/*",
 		"http://kerio.github.io/SamepagePresentation/"
